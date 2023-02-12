@@ -1,88 +1,50 @@
-$(document).ready(function() {
+var today = moment();
+var timeBlockE1 = document.querySelector('.container');
 
-    // display current date below title 
-    var currentDay = moment().format('dddd, MMMM Do, YYYY');
-    $("#currentDay").text(currentDay);
+$('#currentDay').text(today.format('dddd, MMMM Do, YYYY'));
 
-    // colorcode timeblocks to indicate whether they are in the past, present or future
-    var currentHour = moment().format('H');
-    $(".time-block").each(function() {
-        if (parseInt(currentHour) === parseInt(this.id)) {
-            $(this).addClass("present");
-        } else if (parseInt(currentHour) > parseInt(this.id)) {
-            $(this).addClass("past");
-        } else {
-            $(this).addClass("future");
-        }
-    })
-
-    $(".saveBtn").each(function() {
-        if (parseInt(currentHour) === parseInt(this.id.split("-")[1])) {
-            $(this).addClass("present");
-        } else if (parseInt(currentHour) > parseInt(this.id.split("-")[1])) {
-            $(this).addClass("past");
-        } else {
-            $(this).addClass("future");
-        }
-    })
-
-    // client-side storage for events
-    var storedEvents = [];
-
-    initialise();
-
-    function renderEvents() {
-        $("textarea").each(function() {
-            this.value = "";
-        })
-        
-        $.each(storedEvents, function() {
-            $("textarea." + this.eventTime)[0].value = this.eventText;
-        }) 
-    }
-
-    function initialise() {
-        var userEvent = JSON.parse(localStorage.getItem("storedEvents"));
-        if (userEvent !== null) {
-            storedEvents = userEvent;
-        }
-
-        renderEvents();
-    }
-
-    function storeEvents() {
-        localStorage.setItem("storedEvents", JSON.stringify(storedEvents));
-    }
-
-    $("button").on("click", function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        var className = $(event.target).attr("class");
-        
-        var eventObject = {
-            eventTime: className,
-            eventText: $("textarea." + className).val()
-        } 
-        console.log(eventObject.eventText);
-
-        if (storedEvents.length > 0) {
-            $.each(storedEvents, function() {
-                if (this.eventTime === event.target.className) {
-                    storedEvents.splice($.inArray(this, storedEvents), 1);
-                }    
-            });
-        }
-
-        storedEvents.push(eventObject);
-
-        $.each(storedEvents, function() {
-            if (this.eventText === "") {
-                storedEvents.splice($.inArray(this, storedEvents), 1);
-            }
-        })
-
-        storeEvents();
-        renderEvents();
-    })
+$('saveBtn').on('click', function(){
+    var textValue = $(this).siblings('.description').val();var timeKey = $(this).parent().attr('id');
+    localStorage.setIten(timeKey, textValue);
 });
+
+// Get item from local storage
+$('#hour6 .dsecription').val(localStorage.getItem('hour6'));
+$('#hour7 .dsecription').val(localStorage.getItem('hour7'));
+$('#hour8 .dsecription').val(localStorage.getItem('hour8'));
+$('#hour9 .dsecription').val(localStorage.getItem('hour9'));
+$('#hour10 .dsecription').val(localStorage.getItem('hour10'));
+$('#hour11 .dsecription').val(localStorage.getItem('hour11'));
+$('#hour12 .dsecription').val(localStorage.getItem('hour12'));
+$('#hour13 .dsecription').val(localStorage.getItem('hour13'));
+$('#hour14 .dsecription').val(localStorage.getItem('hour14'));
+$('#hour15 .dsecription').val(localStorage.getItem('hour15'));
+$('#hour16 .dsecription').val(localStorage.getItem('hour16'));
+
+function auditTask(){
+    var currentHour = today.hours();
+
+    $('.time-block').each(function () {
+        var timeId = parseInt($(this).attr('id').split("hour")[1]);
+        if (timeId < currentHour) {
+            $(this).addClass('past');
+        }
+        else if (timeId === currentHour) {
+            $(this).removeClass('past');
+            $(this).removeClass('future');
+            $(this).addClass('present');
+        }
+        else{
+            $(this).removeClass('past');
+            $(this).removeClass('present');
+            $(this).addClass('future');
+        }
+        
+    });
+}
+
+auditTask();
+
+setTimeout(function (){
+    location = '';
+}, 1000 * 60);
